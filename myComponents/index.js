@@ -41,6 +41,7 @@ template.innerHTML = /*html*/`
   }
 
   .marqueeText {
+    font-size: 2em;
     color: "orange";
     font-family: 'ds-digitalnormal' !important;
     }
@@ -207,8 +208,11 @@ template.innerHTML = /*html*/`
       <button id="play">Play</button> 
       <button id="pause">Pause</button>
       <button id="avance10">+10s</button>
-      <br>
+      <button id="previous">previous</button>
+      <button id="next">next</button>
 
+      <br>
+      <p>Speed</p>
       <webaudio-knob id="sliderSpeed" 
       sprites="30"
       value=1 min=0 max=4 step=1
@@ -219,6 +223,7 @@ template.innerHTML = /*html*/`
     </div>
 
     <div class="Volume">
+    <p>Volume</p>
     <webaudio-knob id="volumeKnob" 
       src="./assets/imgs/LittlePhatty.png" 
       value=0 min=0 max=1 step=0.01 
@@ -391,15 +396,39 @@ class MyAudioPlayer extends HTMLElement {
 
       requestAnimationFrame(this.visualize);
 
+
       this.playlist = [
         {
-        name:"test1",
+          name:"Can't stop - Red Hot Chili Peppers",
+          src: "https://leo-guillaumet.com/webComponent/audio/playlist/Can't%20Stop.mp3",
+        },
+        {
+        name:"CyberPunk Night City",
         src: "https://leo-guillaumet.com/webComponent/audio/playlist/NightCity.mp3",
-        nb: 1
-      }
+      },
+      {
+        name:"Luv(sic) pt2 - Nujabes ",
+        src: "https://leo-guillaumet.com/webComponent/audio/playlist/Luv%20(sic)%20pt2.mp3",
+      },
+      {
+        name:"Aerodynamic - DaftPunk",
+        src: "https://leo-guillaumet.com/webComponent/audio/playlist/Aerodynamic.mp3",
+      },
+      {
+        name:"Wanna be Crazy - GuiltyGear",
+        src: "https://leo-guillaumet.com/webComponent/audio/playlist/Wanna%20be%20Crazy.mp3",
+      },
+      {
+        name:"Little Busters - The Pillows",
+        src: "https://leo-guillaumet.com/webComponent/audio/playlist/Little%20Busters%20-%20The%20Pillows.mp3",
+      },
       ];
+      this.currentNbTrack = 0;  
 
-      this.player.src = this.playlist[0].src;
+      this.player.src = this.playlist[this.currentNbTrack].src;
+
+
+      this.shadowRoot.querySelector(".marqueeText").textContent= this.playlist[this.currentNbTrack].name;
 
     }
 
@@ -584,6 +613,9 @@ class MyAudioPlayer extends HTMLElement {
     });
   }
   defineListeners() {
+
+
+    
     this.shadowRoot.querySelector("#play").onclick = () => {
       this.player.play();
     }
@@ -595,6 +627,40 @@ class MyAudioPlayer extends HTMLElement {
     this.shadowRoot.querySelector("#avance10").onclick = () => {
       this.player.currentTime += 10;
     }
+
+    this.shadowRoot.querySelector("#next").onclick = () => {
+      if(this.playlist.length-1 > this.currentNbTrack) {
+      console.log("playlist has", this.playlist.length, "tracks");
+      this.player.src = this.playlist[this.currentNbTrack+1].src;
+      this.currentNbTrack += 1;
+      console.log("next", this.currentNbTrack);
+      this.shadowRoot.querySelector(".marqueeText").textContent= this.playlist[this.currentNbTrack].name;
+      }
+      else{
+        this.currentNbTrack = 0;
+        console.log("end of playlist", this.currentNbTrack);
+        this.player.src = this.playlist[this.currentNbTrack].src;
+        this.shadowRoot.querySelector(".marqueeText").textContent= this.playlist[this.currentNbTrack].name;
+      }
+      setTimeout(() => { this.player.play(); }, 1000);
+      
+    }
+
+    this.shadowRoot.querySelector("#previous").onclick = () => {
+      if(this.currentNbTrack === 0) {
+        this.currentNbTrack = this.playlist.length-1;
+      this.player.src = this.playlist[this.currentNbTrack].src;
+      this.shadowRoot.querySelector(".marqueeText").textContent= this.playlist[this.currentNbTrack].name;
+      }
+      else{
+        this.currentNbTrack -= 1;
+        this.player.src = this.playlist[this.currentNbTrack].src;
+        this.shadowRoot.querySelector(".marqueeText").textContent= this.playlist[this.currentNbTrack].name;
+      }
+      setTimeout(() => { this.player.play(); }, 1000);
+      
+    }
+
 
     this.shadowRoot.querySelector("#sliderSpeed").oninput = (event) => {
       this.player.playbackRate = parseFloat(event.target.value);
