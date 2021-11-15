@@ -8,6 +8,7 @@ const template = document.createElement("template");
 template.innerHTML = /*html*/`
   <style>
 
+
   .audio-player-info {
     height: 50px;
     width: 350px;
@@ -32,7 +33,7 @@ template.innerHTML = /*html*/`
 
   }
   .progress {
-    background: coral;
+    background: purple;
     width: 0%;
     height: 100%;
   }
@@ -52,7 +53,7 @@ template.innerHTML = /*html*/`
     margin-left:10px;
   }
   
-  #equalizer {
+  #balance {
     border:1px solid;
   }
   .main {
@@ -131,18 +132,18 @@ template.innerHTML = /*html*/`
 
   .container {
     margin: 0 auto;
-    width: 950px;
+    width: 900px;
+    height: 800px;
     display: grid;
     justify-items: center; 
     grid-template-columns: 1fr 1fr 1fr; 
-    grid-template-rows: 1fr 1fr 1fr 1fr 1fr; 
+    grid-template-rows: 1fr 1fr 1fr 1fr; 
     gap: 0px 0px; 
     grid-template-areas: 
       "Preview1 Preview2 Preview3"
       "VUL playerInfo VUR"
       "Equalizer Equalizer Equalizer"
-      "Balance Actions Volume"
-      "Bonus Bonus Bonus"; 
+      "Balance Actions Volume"; 
   }
   .playerInfo { grid-area: playerInfo; }
   .VUL { grid-area: VUL; text-align: center; }
@@ -151,12 +152,40 @@ template.innerHTML = /*html*/`
   .Actions { grid-area: Actions; text-align: center; }
   .Volume { grid-area: Volume; text-align: center; }
   .Balance { grid-area: Balance; text-align: center; }
-  .Bonus { grid-area: Bonus; text-align: center; }
   .Preview1 { grid-area: Preview1; text-align: center; }
   .Preview2 { grid-area: Preview2; text-align: center; }
   .Preview3 { grid-area: Preview3; text-align: center; }
 
 
+  .buttonActions {
+    background: #1f1f1f;
+    border: none;
+    outline: none;
+    color: white;
+    font-family: inherit;
+    font-weight: 400;
+    font-size: 20px;
+    border-radius: 3px;
+    box-shadow: 0 5px 0px #000000;
+    border-bottom: 2px solid #000000;
+  }
+  .buttonActions:hover {
+    background: #262626;
+    box-shadow: 0 4px 1px #262626;
+    border-bottom: 2px solid #262626;
+    transition: all 0.1s ease-in;
+  }
+  .buttonActions:active {
+    transform: translateY(4px);
+    border-bottom-width: 2px;
+    box-shadow: none;
+  }
+  .buttonActions:after {
+    transform: translateY(4px);
+    border-bottom-width: 2px;
+    box-shadow: none;
+  }
+  
   
   </style>
 
@@ -203,21 +232,79 @@ template.innerHTML = /*html*/`
       tooltip="power right: %d">
     </webaudio-knob>
     </div>
-    <div class="Equalizer"></div>
+    <div class="Equalizer">
+
+    <label>60Hz</label>
+
+    <webaudio-knob id="eq0" 
+    sprites="29"
+        value=0 min=-20 max=20 step=1
+    src="./assets/imgs/sliderEq.png" 
+    tooltip="Speed: x %s">
+    </webaudio-knob>
+
+    <label>170Hz</label>
+
+    <webaudio-knob id="eq1" 
+    sprites="29"
+    value=0 min=-10 max=10 step=0.01
+    src="./assets/imgs/sliderEq.png" 
+    tooltip="Speed: x %s">
+    </webaudio-knob>
+
+    <label>350Hz</label>
+
+    <webaudio-knob id="eq2" 
+    sprites="29"
+        value=0 min=-20 max=20 step=1
+    src="./assets/imgs/sliderEq.png" 
+    tooltip="Speed: x %s">
+    </webaudio-knob>
+
+    <label>1000Hz</label>
+
+    <webaudio-knob id="eq3" 
+    sprites="29"
+        value=0 min=-20 max=20 step=1
+    src="./assets/imgs/sliderEq.png" 
+    tooltip="Speed: x %s">
+    </webaudio-knob>
+
+    <label>3500Hz</label>
+
+    <webaudio-knob id="eq4" 
+    sprites="29"
+        value=0 min=-20 max=20 step=1
+    src="./assets/imgs/sliderEq.png" 
+    tooltip="Speed: x %s">
+    </webaudio-knob>
+
+    <label>10000Hz</label>
+
+    <webaudio-knob id="eq5" 
+    sprites="29"
+        value=0 min=-20 max=20 step=1
+    src="./assets/imgs/sliderEq.png" 
+    tooltip="Speed: x %s">
+    </webaudio-knob>
+
+
+    
+    </div>
     <div class="Actions">
-      <button id="play">Play</button> 
-      <button id="pause">Pause</button>
-      <button id="avance10">+10s</button>
-      <button id="previous">previous</button>
-      <button id="next">next</button>
+        <input class="buttonActions" id="play" type="button" value="Play">
+        <input class="buttonActions" id="pause" type="button" value="Pause">
+        <input class="buttonActions" id="avance10" type="button" value="+10sec">
+        <input class="buttonActions" id="previous" type="button" value="previous">
+        <input class="buttonActions" id="next" type="button" value="next">
 
       <br>
       <p>Speed</p>
       <webaudio-knob id="sliderSpeed" 
       sprites="30"
-      value=1 min=0 max=4 step=1
+      value=1 min=0 max=4 step=0.5
       src="./assets/imgs/Slider1.png" 
-      tooltip="Speed: x %d">
+      tooltip="Speed: x %s">
       </webaudio-knob>
       
     </div>
@@ -227,18 +314,46 @@ template.innerHTML = /*html*/`
     <webaudio-knob id="volumeKnob" 
       src="./assets/imgs/LittlePhatty.png" 
       value=0 min=0 max=1 step=0.01 
-      diameter="32" 
-      tooltip="Volume: %d">
+      diameter="64" 
+      tooltip="Volume: %s">
     </webaudio-knob>
     </div>
 
-    <div class="Balance"></div>
-    <div class="Bonus"></div>
-    <div class="Preview1">
-    <canvas id="equalizer" width=300 height=100></canvas>
+    <div class="Balance">
+
+    <p>detune</p>
+    <span>High</span>
+    <webaudio-knob id="detuneSlider" 
+    sprites="4"
+    value=100 min=0 max=100 step=1
+    src="./assets/imgs/SliderDetune.png" 
+    tooltip="detune: x %s">
+    </webaudio-knob>
+    <span>Low</span>
+    <br/>
+    <br/>
+
+    <p>Balance</p>
+    <webaudio-knob id="balanceKnob" 
+      src="./assets/imgs/knob_black.png" 
+      value=0 min=-1 max=1 step=0.01
+      diameter="64" 
+      tooltip="Balance: %s">
+    </webaudio-knob>
+    <br/>
+    <span>Left</span>
+    <span>/</span>
+    <span>Right</span>
+
 
     </div>
-    <div class="Preview2"></div>
+    <div class="Bonus"></div>
+    <div class="Preview1">
+    <canvas id="balance" width=300 height=100></canvas>
+    </div>
+    <div class="Preview2">
+    <canvas id="visual" width=300 height=100></canvas>
+    </div>
     <div class="Preview3">
     <canvas id="spectrum" width=300 height=100></canvas>
     </div>
@@ -265,7 +380,6 @@ class MyAudioPlayer extends HTMLElement {
 
 
   buildAudioGraph() {
-
     const sourceNode = this.audioContext.createMediaElementSource(this.player);
 
     // connect the source node to a stereo pannel
@@ -290,9 +404,16 @@ class MyAudioPlayer extends HTMLElement {
     this.stereoPanner.connect(this.analyser);
     // and teh analyser to the destination
 
-    this.getTitle();
 
-    this.analyser.connect(this.audioContext.destination);
+    this.analyserVisual = this.audioContext.createAnalyser();
+    this.analyserVisual.fftSize = 256;
+    this.bufferLengthVisual = this.analyserVisual.frequencyBinCount;
+    this.dataArrayVisual = new Uint8Array(this.bufferLengthVisual);
+
+    sourceNode.connect(this.analyserVisual);
+    this.analyserVisual.connect(this.audioContext.destination);
+
+
 
     // This is new, we add another route from the stereoPanner node
 
@@ -310,7 +431,6 @@ class MyAudioPlayer extends HTMLElement {
     this.splitter = this.audioContext.createChannelSplitter();
 
     // connect the source to the analyser and the splitter
-    this.stereoPanner.connect(this.splitter);
 
     // connect one of the outputs from the splitter to
     // the analyser
@@ -322,11 +442,54 @@ class MyAudioPlayer extends HTMLElement {
     // the analyser used for the waveform
 
 
+    this.filters = [];
+
+    [60, 170, 350, 1000, 3500, 10000].forEach((freq, i) => {
+      const eq = this.audioContext.createBiquadFilter();
+      eq.frequency.value = freq;
+      eq.type = "peaking";
+      eq.gain.value = 0;
+      this.filters.push(eq);
+    });
+
+    // Connect filters in serie
+    sourceNode.connect(this.filters[0]);
+    for (var i = 0; i < this.filters.length - 1; i++) {
+      this.filters[i].connect(this.filters[i + 1]);
+    }
+
+    // Master volume is a gain node
+    this.masterGain = this.audioContext.createGain();
+    this.masterGain.value = 1;
+
+
+    // connect the last filter to the speakers
+    this.filters[this.filters.length - 1].connect(this.masterGain);
+
+    this.stereoPanner.connect(this.splitter);
+
+    this.masterGain.connect(this.stereoPanner);
+    this.analyser.connect(this.audioContext.destination);
+
+
+    this.filters.forEach((filter, index) => {
+      this.shadowRoot.querySelector("#eq" + index).oninput = (event) => {
+        this.changeSpecificFreqGain(parseFloat(event.target.value), index);
+
+        console.log("gain =  " + parseFloat(event.target.value) + " " + filter);
+      }
+    });
+
+
+
+
   }
 
   clearAllCanvas() {
     this.canvasContextS.save();
-    this.canvasContextE.save();
+    this.canvasContextB.save();
+    this.canvasContextV.save();
+
 
 
     // clear the canvas
@@ -336,11 +499,16 @@ class MyAudioPlayer extends HTMLElement {
     this.canvasContextS.fillStyle = 'rgba(0, 0, 0, 0.5)';
     this.canvasContextS.fillRect(0, 0, this.canvasSpectrum.width, this.canvasSpectrum.height);
 
-    this.canvasContextE.fillStyle = 'rgba(0, 0, 0, 0.5)';
-    this.canvasContextE.fillRect(0, 0, this.canvasEqualizer.width, this.canvasEqualizer.height);
+    this.canvasContextB.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    this.canvasContextB.fillRect(0, 0, this.canvasBalance.width, this.canvasBalance.height);
+
+    this.canvasContextV.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    this.canvasContextV.fillRect(0, 0, this.canvasVisual.width, this.canvasVisual.height);
 
     this.canvasContextS.restore();
-    this.canvasContextE.restore();
+    this.canvasContextB.restore();
+    this.canvasContextV.restore();
+
 
   }
 
@@ -353,6 +521,7 @@ class MyAudioPlayer extends HTMLElement {
     this.drawVolumeMeters();
     this.drawWaveform();
     this.drawProgressBar();
+    this.drawAudioVisual();
 
     // call again the visualize function at 60 frames/s
     requestAnimationFrame(() => this.visualize());
@@ -384,12 +553,16 @@ class MyAudioPlayer extends HTMLElement {
       this.canvasContextS = this.canvasSpectrum.getContext('2d');
 
 
-      this.canvasEqualizer = this.shadowRoot.querySelector("#equalizer");
-      this.canvasContextE = this.canvasEqualizer.getContext('2d');
+      this.canvasBalance = this.shadowRoot.querySelector("#balance");
+      this.canvasContextB = this.canvasBalance.getContext('2d');
+
+
+      this.canvasVisual = this.shadowRoot.querySelector("#visual");
+      this.canvasContextV = this.canvasVisual.getContext('2d');
 
       // Update the canvas to fill the space of the component.
       this.initializeAudio();
-      this.initializeEqualizer();
+      this.initializeBalance();
 
 
       this.buildAudioGraph();
@@ -399,36 +572,38 @@ class MyAudioPlayer extends HTMLElement {
 
       this.playlist = [
         {
-          name:"Can't stop - Red Hot Chili Peppers",
+          name: "Can't stop - Red Hot Chili Peppers",
           src: "https://leo-guillaumet.com/webComponent/audio/playlist/Can't%20Stop.mp3",
         },
         {
-        name:"CyberPunk Night City",
-        src: "https://leo-guillaumet.com/webComponent/audio/playlist/NightCity.mp3",
-      },
-      {
-        name:"Luv(sic) pt2 - Nujabes ",
-        src: "https://leo-guillaumet.com/webComponent/audio/playlist/Luv%20(sic)%20pt2.mp3",
-      },
-      {
-        name:"Aerodynamic - DaftPunk",
-        src: "https://leo-guillaumet.com/webComponent/audio/playlist/Aerodynamic.mp3",
-      },
-      {
-        name:"Wanna be Crazy - GuiltyGear",
-        src: "https://leo-guillaumet.com/webComponent/audio/playlist/Wanna%20be%20Crazy.mp3",
-      },
-      {
-        name:"Little Busters - The Pillows",
-        src: "https://leo-guillaumet.com/webComponent/audio/playlist/Little%20Busters%20-%20The%20Pillows.mp3",
-      },
+          name: "CyberPunk Night City",
+          src: "https://leo-guillaumet.com/webComponent/audio/playlist/NightCity.mp3",
+        },
+        {
+          name: "Luv(sic) pt2 - Nujabes ",
+          src: "https://leo-guillaumet.com/webComponent/audio/playlist/Luv%20(sic)%20pt2.mp3",
+        },
+        {
+          name: "Aerodynamic - DaftPunk",
+          src: "https://leo-guillaumet.com/webComponent/audio/playlist/Aerodynamic.mp3",
+        },
+        {
+          name: "Wanna be Crazy - GuiltyGear",
+          src: "https://leo-guillaumet.com/webComponent/audio/playlist/Wanna%20be%20Crazy.mp3",
+        },
+        {
+          name: "Little Busters - The Pillows",
+          src: "https://leo-guillaumet.com/webComponent/audio/playlist/Little%20Busters%20-%20The%20Pillows.mp3",
+        },
       ];
-      this.currentNbTrack = 0;  
+      this.currentNbTrack = 0;
 
       this.player.src = this.playlist[this.currentNbTrack].src;
 
 
-      this.shadowRoot.querySelector(".marqueeText").textContent= this.playlist[this.currentNbTrack].name;
+      this.shadowRoot.querySelector(".marqueeText").textContent = this.playlist[this.currentNbTrack].name;
+      this.shadowRoot.querySelector("#volumeKnob").value = this.player.volume
+
 
     }
 
@@ -444,6 +619,9 @@ class MyAudioPlayer extends HTMLElement {
       this.shadowRoot.querySelector(".time .current").textContent = this.convertHMS(
         this.player.currentTime
       );
+      if (this.player.currentTime === this.player.duration) {
+        this.next();
+      }
     }, 500);
   }
 
@@ -453,7 +631,7 @@ class MyAudioPlayer extends HTMLElement {
     this.analyser.getByteTimeDomainData(this.dataArray);
 
     this.canvasContextS.lineWidth = 2;
-    this.canvasContextS.strokeStyle = 'lightBlue';
+    this.canvasContextS.strokeStyle = 'purple';
 
     // all the waveform is in one single path, first let's
     // clear any previous path that could be in the buffer
@@ -487,11 +665,44 @@ class MyAudioPlayer extends HTMLElement {
     this.canvasContextS.restore();
   }
 
+  drawAudioVisual() {
+    // clear the canvas
+    // this.canvasContextV.clearRect(0, 0, this.canvasVisual.width, this.canvasVisual.height);
+
+    // Or use rgba fill to give a slight blur effect
+    //canvasContext.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    //canvasContext.fillRect(0, 0, width, height);
+
+    // Get the analyser data
+    this.analyserVisual.getByteFrequencyData(this.dataArrayVisual);
+
+    var barWidth = this.canvasVisual.width / this.bufferLengthVisual;
+    var barHeight;
+    var x = 0;
+
+    // values go from 0 to 256 and the canvas heigt is 100. Let's rescale
+    // before drawing. This is the scale factor
+    this.heightScale = this.canvasVisual.height / 128;
+
+    for (var i = 0; i < this.bufferLengthVisual; i++) {
+      barHeight = this.dataArrayVisual[i];
+
+
+      this.canvasContextV.fillStyle = 'rgb(128,' + (barHeight / 10) + ',128)';
+      barHeight *= this.heightScale;
+      this.canvasContextV.fillRect(x, this.canvasVisual.height - barHeight / 2, barWidth, barHeight / 2);
+
+      // 2 is the number of pixels between bars
+      x += barWidth + 1;
+    }
+
+  }
+
   drawVolumeMeters() {
-    this.canvasContextE.save();
+    this.canvasContextB.save();
 
     // set the fill style to a nice gradient
-    this.canvasContextE.fillStyle = this.gradient;
+    this.canvasContextB.fillStyle = this.gradient;
 
 
     this.shadowRoot.querySelector("#peakR").value = this.decibelRight;
@@ -505,7 +716,7 @@ class MyAudioPlayer extends HTMLElement {
 
 
     // draw the vertical meter for left channel
-    this.canvasContextE.fillRect(0, this.canvasSpectrum.height - this.averageLeft, 25, this.canvasSpectrum.height);
+    this.canvasContextB.fillRect(0, this.canvasSpectrum.height - this.averageLeft, 25, this.canvasSpectrum.height);
 
     // right channel
     this.analyserRight.getByteFrequencyData(this.dataArrayRight);
@@ -514,10 +725,10 @@ class MyAudioPlayer extends HTMLElement {
 
 
     // draw the vertical meter for left channel
-    this.canvasContextE.fillRect(26, this.canvasSpectrum.height - this.averageRight, 25, this.canvasSpectrum.height);
+    this.canvasContextB.fillRect(26, this.canvasSpectrum.height - this.averageRight, 25, this.canvasSpectrum.height);
 
 
-    this.canvasContextE.restore();
+    this.canvasContextB.restore();
   }
 
   initializeAudio() {
@@ -529,9 +740,9 @@ class MyAudioPlayer extends HTMLElement {
     this.audioContext = new audioCtx();
   }
 
-  initializeEqualizer() {
+  initializeBalance() {
     // create a vertical gradient of the height of the canvas
-    this.gradient = this.canvasContextE.createLinearGradient(0, 0, 0, this.canvasSpectrum.height);
+    this.gradient = this.canvasContextB.createLinearGradient(0, 0, 0, this.canvasSpectrum.height);
     this.gradient.addColorStop(1, '#000000');
     this.gradient.addColorStop(0.75, '#ff0000');
     this.gradient.addColorStop(0.25, '#ffff00');
@@ -570,8 +781,8 @@ class MyAudioPlayer extends HTMLElement {
     return decibel;
   }
 
-    getTitle() {
-      console.log(this.player.attributes);
+  getTitle() {
+    console.log(this.player.attributes);
   };
 
 
@@ -593,16 +804,6 @@ class MyAudioPlayer extends HTMLElement {
     return hours + ':' + minutes + ':' + seconds; // Return is HH : MM : SS
   }
 
-  changeBalance(sliderVal) {
-    // between -1 and +1
-    var value = parseFloat(sliderVal);
-
-    stereoPanner.pan.value = value;
-    // update output labels
-    var output = document.querySelector("#balanceOutput");
-    output.value = value;
-  }
-
   fixRelativeURLs() {
     const elems = this.shadowRoot.querySelectorAll("webaudio-knob, webaudio-slider, webaudio-switch, img");
     elems.forEach(e => {
@@ -612,10 +813,36 @@ class MyAudioPlayer extends HTMLElement {
       }
     });
   }
+
+  next() {
+    if (this.playlist.length - 1 > this.currentNbTrack) {
+      console.log("playlist has", this.playlist.length, "tracks");
+      this.player.src = this.playlist[this.currentNbTrack + 1].src;
+      this.currentNbTrack += 1;
+      console.log("next", this.currentNbTrack);
+      this.shadowRoot.querySelector(".marqueeText").textContent = this.playlist[this.currentNbTrack].name;
+    }
+    else {
+      this.currentNbTrack = 0;
+      console.log("end of playlist", this.currentNbTrack);
+      this.player.src = this.playlist[this.currentNbTrack].src;
+      this.shadowRoot.querySelector(".marqueeText").textContent = this.playlist[this.currentNbTrack].name;
+    }
+    setTimeout(() => { this.player.play(); }, 1000);
+  }
+
+
+  changeSpecificFreqGain(sliderVal, nbFreqEq) {
+    const value = parseFloat(sliderVal);
+
+    console.log(nbFreqEq, this.filters.length);
+    this.filters[nbFreqEq].gain.value = value;
+  }
+
   defineListeners() {
 
 
-    
+
     this.shadowRoot.querySelector("#play").onclick = () => {
       this.player.play();
     }
@@ -629,36 +856,23 @@ class MyAudioPlayer extends HTMLElement {
     }
 
     this.shadowRoot.querySelector("#next").onclick = () => {
-      if(this.playlist.length-1 > this.currentNbTrack) {
-      console.log("playlist has", this.playlist.length, "tracks");
-      this.player.src = this.playlist[this.currentNbTrack+1].src;
-      this.currentNbTrack += 1;
-      console.log("next", this.currentNbTrack);
-      this.shadowRoot.querySelector(".marqueeText").textContent= this.playlist[this.currentNbTrack].name;
-      }
-      else{
-        this.currentNbTrack = 0;
-        console.log("end of playlist", this.currentNbTrack);
-        this.player.src = this.playlist[this.currentNbTrack].src;
-        this.shadowRoot.querySelector(".marqueeText").textContent= this.playlist[this.currentNbTrack].name;
-      }
-      setTimeout(() => { this.player.play(); }, 1000);
-      
+
+      this.next();
     }
 
     this.shadowRoot.querySelector("#previous").onclick = () => {
-      if(this.currentNbTrack === 0) {
-        this.currentNbTrack = this.playlist.length-1;
-      this.player.src = this.playlist[this.currentNbTrack].src;
-      this.shadowRoot.querySelector(".marqueeText").textContent= this.playlist[this.currentNbTrack].name;
+      if (this.currentNbTrack === 0) {
+        this.currentNbTrack = this.playlist.length - 1;
+        this.player.src = this.playlist[this.currentNbTrack].src;
+        this.shadowRoot.querySelector(".marqueeText").textContent = this.playlist[this.currentNbTrack].name;
       }
-      else{
+      else {
         this.currentNbTrack -= 1;
         this.player.src = this.playlist[this.currentNbTrack].src;
-        this.shadowRoot.querySelector(".marqueeText").textContent= this.playlist[this.currentNbTrack].name;
+        this.shadowRoot.querySelector(".marqueeText").textContent = this.playlist[this.currentNbTrack].name;
       }
       setTimeout(() => { this.player.play(); }, 1000);
-      
+
     }
 
 
@@ -672,12 +886,17 @@ class MyAudioPlayer extends HTMLElement {
       console.log("volume =  " + this.player.volume);
     }
 
-    this.shadowRoot.querySelector("#volumeKnob").oninput = (event) => {
-      this.player.volume = parseFloat(event.target.value);
-      console.log("volume =  " + this.player.volume);
+    this.shadowRoot.querySelector("#balanceKnob").oninput = (event) => {
+      this.stereoPanner.pan.value = parseFloat(event.target.value);
+      console.log("balance =  " + this.stereoPanner.pan.value);
     }
 
-    const timeline =this.shadowRoot.querySelector(".timeline")
+    this.shadowRoot.querySelector("#detuneSlider").oninput = (event) => {
+      this.player.detune = parseFloat(event.target.value);
+      console.log("detune =  " + this.player.detune + " %");
+    }
+
+    const timeline = this.shadowRoot.querySelector(".timeline")
     timeline.onclick = (event) => {
       const timelineWidth = window.getComputedStyle(timeline).width;
       const timeToSeek = event.offsetX / parseInt(timelineWidth) * this.player.duration;
