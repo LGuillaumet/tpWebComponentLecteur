@@ -7,6 +7,7 @@
 Rendu TP webcomponent M2 MIAGE.
 
 
+Disponible ici : https://leo-guillaumet.com/webComponent/audio/tpWebComponentLecteur/
 
 Objectif : Créer un composant <my-player> qui va lire plusieurs fichiers audio et proposer différentes options ainsi que des visualisations.
 
