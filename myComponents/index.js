@@ -265,7 +265,7 @@ template.innerHTML = /*html*/`
 
     <webaudio-knob id="eq0" 
     sprites="29"
-        value=0 min=-20 max=20 step=1
+        value=0 min=-30 max=30 step=1
     src="./assets/imgs/sliderEq.png" 
     tooltip="Freq: x %s">
     </webaudio-knob>
@@ -274,7 +274,7 @@ template.innerHTML = /*html*/`
 
     <webaudio-knob id="eq1" 
     sprites="29"
-    value=0 min=-10 max=10 step=0.01
+    value=0 min=-30 max=30 step=1
     src="./assets/imgs/sliderEq.png" 
     tooltip="Freq: x %s">
     </webaudio-knob>
@@ -283,7 +283,7 @@ template.innerHTML = /*html*/`
 
     <webaudio-knob id="eq2" 
     sprites="29"
-        value=0 min=-20 max=20 step=1
+        value=0 min=-30 max=30 step=1
     src="./assets/imgs/sliderEq.png" 
     tooltip="Freq: x %s">
     </webaudio-knob>
@@ -292,7 +292,7 @@ template.innerHTML = /*html*/`
 
     <webaudio-knob id="eq3" 
     sprites="29"
-        value=0 min=-20 max=20 step=1
+        value=0 min=-30 max=30 step=1
     src="./assets/imgs/sliderEq.png" 
     tooltip="Freq: x %s">
     </webaudio-knob>
@@ -301,7 +301,7 @@ template.innerHTML = /*html*/`
 
     <webaudio-knob id="eq4" 
     sprites="29"
-        value=0 min=-20 max=20 step=1
+        value=0 min=-30 max=30 step=1
     src="./assets/imgs/sliderEq.png" 
     tooltip="Freq: x %s">
     </webaudio-knob>
@@ -310,7 +310,7 @@ template.innerHTML = /*html*/`
 
     <webaudio-knob id="eq5" 
     sprites="29"
-        value=0 min=-20 max=20 step=1
+        value=0 min=-30 max=30 step=1
     src="./assets/imgs/sliderEq.png" 
     tooltip="Freq: x %s">
     </webaudio-knob>
@@ -344,21 +344,6 @@ template.innerHTML = /*html*/`
       diameter="64" 
       tooltip="Volume: %s">
     </webaudio-knob>
-    </div>
-
-    <div class="Balance">
-
-    <p>detune</p>
-    <span>High</span>
-    <webaudio-knob id="detuneSlider" 
-    sprites="4"
-    value=100 min=0 max=100 step=1
-    src="./assets/imgs/SliderDetune.png" 
-    tooltip="detune: x %s">
-    </webaudio-knob>
-    <span>Low</span>
-    <br/>
-    <br/>
 
     <p>Balance</p>
     <webaudio-knob id="balanceKnob" 
@@ -371,10 +356,43 @@ template.innerHTML = /*html*/`
     <span>Left</span>
     <span>/</span>
     <span>Right</span>
+    </div>
 
+    <div class="Balance">
+
+    <p>Frequency</p>
+    <span>Low</span>
+    <webaudio-knob id="freqSlider" 
+    sprites="100"
+    value=11025 min=0 max=22050 step=1
+    src="./assets/imgs/Sonatom_bipo.png" 
+    tooltip="frequency: %s">
+    </webaudio-knob>
+    <span>High</span>
+    <br/>
+    <p>Detune</p>
+    <webaudio-knob id="detuneSlider" 
+    sprites="4"
+    value=100 min=0 max=100 step=1
+    src="./assets/imgs/SliderDetune.png" 
+    tooltip="detune: x %s">
+    </webaudio-knob>
+    <br/>
+    <br/>
+
+    <label>Type</label>
+    <select id="biquadFilterTypeSelector">
+        <option value="lowpass" selected>lowpass</option>
+        <option value="highpass">highpass</option>
+        <option value="bandpass">bandpass</option>
+        <option value="lowshelf">lowshelf</option>
+        <option value="highshelf">highshelf</option>
+        <option value="peaking">peaking</option>
+        <option value="notch">notch</option>
+        <option value="allpass">allpass</option>
+    </select>
 
     </div>
-    <div class="Bonus"></div>
     <div class="Preview1">
     <canvas id="balance" width=300 height=100></canvas>
     </div>
@@ -397,8 +415,6 @@ class MyAudioPlayer extends HTMLElement {
   constructor() {
     super();
     // Récupération des attributs HTML
-    //this.value = this.getAttribute("value");
-
     // On crée un shadow DOM
     this.attachShadow({ mode: "open" });
 
@@ -411,7 +427,7 @@ class MyAudioPlayer extends HTMLElement {
 
     // connect the source node to a stereo pannel
     this.stereoPanner = this.audioContext.createStereoPanner();
-    sourceNode.connect(this.stereoPanner);
+    //sourceNode.connect(this.stereoPanner);
 
 
     this.player.onplay = (e) => { this.audioContext.resume(); }
@@ -426,21 +442,6 @@ class MyAudioPlayer extends HTMLElement {
     this.analyser.fftSize = 1024;
     this.bufferLength = this.analyser.frequencyBinCount;
     this.dataArray = new Uint8Array(this.bufferLength);
-
-    // connect the stereo pannel to the analyser
-    this.stereoPanner.connect(this.analyser);
-    // and teh analyser to the destination
-
-
-    this.analyserVisual = this.audioContext.createAnalyser();
-    this.analyserVisual.fftSize = 256;
-    this.bufferLengthVisual = this.analyserVisual.frequencyBinCount;
-    this.dataArrayVisual = new Uint8Array(this.bufferLengthVisual);
-
-    sourceNode.connect(this.analyserVisual);
-    this.analyserVisual.connect(this.audioContext.destination);
-
-
 
     // This is new, we add another route from the stereoPanner node
 
@@ -480,23 +481,34 @@ class MyAudioPlayer extends HTMLElement {
     });
 
     // Connect filters in serie
-    sourceNode.connect(this.filters[0]);
+    let currentNode = sourceNode;
     for (var i = 0; i < this.filters.length - 1; i++) {
-      this.filters[i].connect(this.filters[i + 1]);
+      currentNode.connect(this.filters[i]);
+      currentNode = this.filters[i];
     }
 
-    // Master volume is a gain node
-    this.masterGain = this.audioContext.createGain();
-    this.masterGain.value = 1;
 
 
-    // connect the last filter to the speakers
-    this.filters[this.filters.length - 1].connect(this.masterGain);
+    //WHITHOUT FILTER
+    // currentNode.connect(this.analyser);
+    // this.analyser.connect(this.stereoPanner);
+    // this.stereoPanner.connect(this.audioContext.destination);
+    // this.stereoPanner.connect(this.splitter);
 
+    this.filterNode = this.audioContext.createBiquadFilter();
+    this.filterNode.type = "lowpass";
+    this.filterNode.frequency.value = 11025;
+    
+
+    currentNode.connect(this.filterNode);
+
+    this.filterNode.connect(this.analyser);
+
+    this.analyser.connect(this.stereoPanner);
+    this.stereoPanner.connect(this.audioContext.destination);
     this.stereoPanner.connect(this.splitter);
 
-    this.masterGain.connect(this.stereoPanner);
-    this.analyser.connect(this.audioContext.destination);
+    this.player.volume = 0.5;
 
 
     this.filters.forEach((filter, index) => {
@@ -701,18 +713,18 @@ class MyAudioPlayer extends HTMLElement {
     //canvasContext.fillRect(0, 0, width, height);
 
     // Get the analyser data
-    this.analyserVisual.getByteFrequencyData(this.dataArrayVisual);
+    this.analyser.getByteFrequencyData(this.dataArray);
 
-    var barWidth = this.canvasVisual.width / this.bufferLengthVisual;
+    var barWidth = this.canvasVisual.width / this.bufferLength;
     var barHeight;
     var x = 0;
 
-    // values go from 0 to 256 and the canvas heigt is 100. Let's rescale
+    // values go from 0 to 1024 and the canvas heigt is 100. Let's rescale
     // before drawing. This is the scale factor
     this.heightScale = this.canvasVisual.height / 128;
 
-    for (var i = 0; i < this.bufferLengthVisual; i++) {
-      barHeight = this.dataArrayVisual[i];
+    for (var i = 0; i < this.bufferLength; i++) {
+      barHeight = this.dataArray[i];
 
 
       this.canvasContextV.fillStyle = 'rgb(128,' + (barHeight / 10) + ',128)';
@@ -743,7 +755,7 @@ class MyAudioPlayer extends HTMLElement {
 
 
     // draw the vertical meter for left channel
-    this.canvasContextB.fillRect(0, this.canvasSpectrum.height - this.averageLeft, 25, this.canvasSpectrum.height);
+    this.canvasContextB.fillRect(0, this.canvasSpectrum.height - this.averageLeft, this.canvasSpectrum.width/2, this.canvasSpectrum.height);
 
     // right channel
     this.analyserRight.getByteFrequencyData(this.dataArrayRight);
@@ -752,7 +764,7 @@ class MyAudioPlayer extends HTMLElement {
 
 
     // draw the vertical meter for left channel
-    this.canvasContextB.fillRect(26, this.canvasSpectrum.height - this.averageRight, 25, this.canvasSpectrum.height);
+    this.canvasContextB.fillRect((this.canvasSpectrum.width/2)+1, this.canvasSpectrum.height - this.averageRight, (this.canvasSpectrum.width/2)-1, this.canvasSpectrum.height);
 
 
     this.canvasContextB.restore();
@@ -770,10 +782,10 @@ class MyAudioPlayer extends HTMLElement {
   initializeBalance() {
     // create a vertical gradient of the height of the canvas
     this.gradient = this.canvasContextB.createLinearGradient(0, 0, 0, this.canvasSpectrum.height);
-    this.gradient.addColorStop(1, '#000000');
-    this.gradient.addColorStop(0.75, '#ff0000');
-    this.gradient.addColorStop(0.25, '#ffff00');
-    this.gradient.addColorStop(0, '#ffffff');
+    this.gradient.addColorStop(1, '#420080');
+    this.gradient.addColorStop(0.75, '#6c00d1');
+    this.gradient.addColorStop(0.25, '#a442ff');
+    this.gradient.addColorStop(0, '#d09eff');
   }
 
 
@@ -919,8 +931,18 @@ class MyAudioPlayer extends HTMLElement {
     }
 
     this.shadowRoot.querySelector("#detuneSlider").oninput = (event) => {
-      this.player.detune = parseFloat(event.target.value);
-      console.log("detune =  " + this.player.detune + " %");
+      this.filterNode.detune.value = parseFloat(event.target.value);
+      console.log("detune =  " + this.filterNode.detune.value + " %");
+    }
+
+    this.shadowRoot.querySelector("#freqSlider").oninput = (event) => {
+      this.filterNode.frequency.value = parseFloat(event.target.value);
+      console.log("frequency =  " + this.filterNode.frequency.value + " %");
+    }
+
+    this.shadowRoot.querySelector("#biquadFilterTypeSelector").onchange = (event) => {
+      this.filterNode.type = event.target.value;
+      console.log("filter type =  " + this.filterNode.type);
     }
 
     const timeline = this.shadowRoot.querySelector(".timeline")
