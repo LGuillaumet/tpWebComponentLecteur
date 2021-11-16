@@ -8,7 +8,22 @@ const template = document.createElement("template");
 template.innerHTML = /*html*/`
   <style>
 
-
+  p{
+    font-weight: bold;
+    color: white;
+    font-size: 1.5em;
+    margin: 5px;
+  }
+  label{
+    font-weight: bold;
+    color: white;
+    font-size: 1em; 
+  }
+  span, label {
+      font-weight: bold;
+      color: white;
+      font-size: 1em;
+  }
   .audio-player-info {
     height: 50px;
     width: 350px;
@@ -129,11 +144,12 @@ template.innerHTML = /*html*/`
     }
   }
 
-
   .container {
     margin: 0 auto;
-    width: 900px;
-    height: 800px;
+    margin-top: 65px;
+    
+    width: 955px;
+    height: 650px;
     display: grid;
     justify-items: center; 
     grid-template-columns: 1fr 1fr 1fr; 
@@ -143,7 +159,18 @@ template.innerHTML = /*html*/`
       "Preview1 Preview2 Preview3"
       "VUL playerInfo VUR"
       "Equalizer Equalizer Equalizer"
-      "Balance Actions Volume"; 
+      "Balance Actions Volume";
+      align-items: center; 
+      background-image: url(https://leo-guillaumet.com/webComponent/audio/tpWebComponentLecteur/myComponents/assets/overlay.png);
+      background-repeat: all;
+      background-position: 0px 0px;
+      animation-name: Static;
+      animation-duration: 2s;
+      animation-iteration-count: infinite;
+      animation-timing-function: steps(4);
+      box-shadow: inset 0px 0px 10em rgb(0 0 0 / 40%);
+      background-color: #646464;
+      
   }
   .playerInfo { grid-area: playerInfo; }
   .VUL { grid-area: VUL; text-align: center; }
@@ -240,7 +267,7 @@ template.innerHTML = /*html*/`
     sprites="29"
         value=0 min=-20 max=20 step=1
     src="./assets/imgs/sliderEq.png" 
-    tooltip="Speed: x %s">
+    tooltip="Freq: x %s">
     </webaudio-knob>
 
     <label>170Hz</label>
@@ -249,7 +276,7 @@ template.innerHTML = /*html*/`
     sprites="29"
     value=0 min=-10 max=10 step=0.01
     src="./assets/imgs/sliderEq.png" 
-    tooltip="Speed: x %s">
+    tooltip="Freq: x %s">
     </webaudio-knob>
 
     <label>350Hz</label>
@@ -258,7 +285,7 @@ template.innerHTML = /*html*/`
     sprites="29"
         value=0 min=-20 max=20 step=1
     src="./assets/imgs/sliderEq.png" 
-    tooltip="Speed: x %s">
+    tooltip="Freq: x %s">
     </webaudio-knob>
 
     <label>1000Hz</label>
@@ -267,7 +294,7 @@ template.innerHTML = /*html*/`
     sprites="29"
         value=0 min=-20 max=20 step=1
     src="./assets/imgs/sliderEq.png" 
-    tooltip="Speed: x %s">
+    tooltip="Freq: x %s">
     </webaudio-knob>
 
     <label>3500Hz</label>
@@ -276,7 +303,7 @@ template.innerHTML = /*html*/`
     sprites="29"
         value=0 min=-20 max=20 step=1
     src="./assets/imgs/sliderEq.png" 
-    tooltip="Speed: x %s">
+    tooltip="Freq: x %s">
     </webaudio-knob>
 
     <label>10000Hz</label>
@@ -285,7 +312,7 @@ template.innerHTML = /*html*/`
     sprites="29"
         value=0 min=-20 max=20 step=1
     src="./assets/imgs/sliderEq.png" 
-    tooltip="Speed: x %s">
+    tooltip="Freq: x %s">
     </webaudio-knob>
 
 
